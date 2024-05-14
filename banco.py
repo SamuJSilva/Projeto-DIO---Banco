@@ -1,14 +1,3 @@
-# DEPÓSITO
-# apenas velores positivos
-# armazenados em uma variável e exibidos no extrato 
-#
-# SAQUE 
-# 3 saques diários com limite de R$ 500,00 APENAS se houver saldo suficiente na conta
-# todos os saldos salvos em uma variável e exibidos no extrato
-#
-# EXTRATO
-# exibe todas as operações feitas na conta, e no final mostrar o saldo atual da conta no formato R$ xxx.xx
-
 import time
 
 def data_e_hora(operacao, valor):
@@ -85,8 +74,3 @@ while True:
 
     else:
         print('Por favor, digite um valor válido. Tente novamente')
-
-
-
-
-
