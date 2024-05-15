@@ -1,55 +1,5 @@
 import time
 
-def data_e_hora(operacao, valor):
-    return (f'{time.strftime("%a, %d %m(%b) %y, %H : %M", time.localtime())} -- {operacao} - R${valor}')
-
-def deposito():
-    while True:
-            valor_deposito = input("Digite o valor a ser depositado: ")
-            valor_deposito = valor_deposito.replace(',', '.')
-
-            try:
-                valor_deposito = float(valor_deposito)
-                saldo_conta += valor_deposito
-                lista_extrato += [data_e_hora('Depósito', valor_deposito)]
-                break
-            
-            except ValueError:
-                print("Digite apenas números e [,] ou [.] Tente novamente")
-                continue
-
-def saque():
-    while True:
-        valor_saque = input('Digite o valor que será sacado: ')
-        valor_saque = valor_saque.replace(',', '.')
-
-        try:
-            valor_saque = float(valor_saque)
-
-            if valor_saque > saldo_conta:
-                print("Você não tem saldo suficiente. O saque não será efetuado")
-                break
-
-            elif limite_saque_atual >= LIMITE_SAQUE:
-                print("Você atingiu o limite diário máximo de saques. O saque não será efetuado")
-            
-            elif valor_saque > 500:
-                print("O limite máximo de saque é de R$500,00. O saque não será efetuado")
-
-            saldo_conta += (valor_saque * -1)
-            lista_extrato += [data_e_hora('Saque', valor_saque)]
-            limite_saque_atual += 1
-            break
-
-        except ValueError:
-            print("Digite apenas números e [,] ou [.] Tente novamente")
-            continue
-        
-def extrato():
-    for item in lista_extrato:
-        print (item, sep='\n')
-    print(f'Saldo Atual: R${saldo_conta:.2f}')
-        
 saldo_conta = 0.00
 lista_extrato = []
 limite_saque_atual = 0
@@ -62,18 +12,68 @@ Digite [3] para EXTRATO
 Digite [4] para SAIR
 
 ==> '''
+
+def data_e_hora(operacao, valor):
+    return (f'{time.strftime("%a, %d %m(%b) %y, %H : %M", time.localtime())} -- {operacao} - R${valor}')
+
+def deposito(valor, extrato, /):
+    extrato += [data_e_hora('Depósito', valor)]
+    return valor, extrato
+            
+def saque(*, valor, extrato, conta, limite_saque, limite_max_saque):
+    global limite_saque_atual
+    
+    if valor > conta:
+        print("Você não tem saldo suficiente. O saque não será efetuado")
+        raise KeyError
+     
+    elif limite_saque >= limite_max_saque:
+        print ("Você atingiu o limite diário máximo de saques. O saque não será efetuado")
+        raise KeyError 
+    
+    elif valor > 500:
+        print("O limite máximo de saque é de R$500,00. O saque não será efetuado")
+        raise KeyError 
+    
+    limite_saque_atual += 1
+    extrato += [data_e_hora('Saque', valor)]
+    return (valor * -1), extrato
+        
+def extrato(saldo, /, *, extrato):
+    for item in extrato:
+        print (item, sep='\n')
+    print(f'Saldo Atual: R${saldo:.2f}')
+        
+
 while True:
     escolha = int(input(menu))
-
+    
     if escolha == 1:
-        deposito()
+        try:
+            valor_deposito, lista_extrato = deposito(
+            float(input(
+                "Qual o valor do depósito? ->").replace(',', '.'))
+            , lista_extrato)
+            saldo_conta += valor_deposito
+        except ValueError:
+            print("Digite apenas números e [,] ou [.] Tente novamente")
+            continue
         
     elif escolha == 2:
-        saque()   
-         
+        try:
+            valor_saque, lista_extrato = saque(valor= float(input(
+                "Qual o valor do saque? ->".replace(',', '.')))
+            , extrato= lista_extrato, conta = saldo_conta, limite_saque = limite_saque_atual, limite_max_saque = LIMITE_SAQUE)
+            saldo_conta += valor_saque
 
+        except ValueError:
+            print("Digite apenas números e [,] ou [.] Tente novamente")
+            continue
+        except:
+            continue
+        
     elif escolha == 3:
-        extrato()
+        extrato(saldo_conta, extrato=lista_extrato)
        
     elif escolha == 4:
         print ("SAINDO...")
