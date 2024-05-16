@@ -14,7 +14,8 @@ Digite [2] para SAQUE
 Digite [3] para EXTRATO
 Digite [4] para NOVO CLIENTE
 Digite [5] para NOVA CONTA
-Digite [6] para SAIR
+Digite [6] para EXIBIR CONTAS
+Digite [7] para SAIR
 
 ==> '''
 
@@ -78,7 +79,10 @@ def criar_conta(usuarios, contas, agencia):
     else:
         print ('CPF não cadastrado no sistema!')
     
-    
+def listar_contas(contas):
+    for conta in contas:
+        for chave, valor in conta.itens():
+            print (chave, valor)    
 
 
 while True:
@@ -116,6 +120,13 @@ while True:
 
     elif escolha == 5:
         criar_conta(usuarios, contas, AGENCIA)
+
+    elif escolha == 6:
+        listar_contas(contas)
+
+    elif escolha == 7:
+        print ('SAINDO ...')
+        break
 
     else:
         print('Por favor, digite um valor válido. Tente novamente')
