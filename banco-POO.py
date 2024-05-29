@@ -70,8 +70,7 @@ class ContaCorrente(Conta):
         else:
             return super().sacar(valor)
         
-        return False
-        
+        return False        
 
 class Historico (Conta):
     def __init__(self):
@@ -146,3 +145,17 @@ class Saque (Transacao):
 
         if sucesso_transacao:
             conta.historico.adicionar_transacao(self)
+
+def menu():
+    escolha = input('''
+Digite [1] para DEPÓSITO
+Digite [2] para SAQUE
+Digite [3] para EXTRATO
+Digite [4] para NOVO CLIENTE
+Digite [5] para NOVA CONTA
+Digite [6] para EXIBIR CONTAS
+Digite [7] para SAIR
+
+==> ''')
+    return escolha
+
